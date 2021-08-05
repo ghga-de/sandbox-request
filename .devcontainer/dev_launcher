@@ -1,0 +1,2 @@
+#!/bin/bash
+uvicorn sandbox_request.api:app --reload
