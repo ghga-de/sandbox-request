@@ -47,20 +47,20 @@ def subscribe_to_storage():
     subscribe(EXCHANGE_STORAGE, STORAGE_REQUEST_TOPIC, STORAGE_REQUEST_QUEUE)
 
 
-def publish_topic():
+def publish_topic(message):
     """
     Run a test for publishing a notification.
     """
-    messageobj = {"msg": "msg"}
+    message_obj = {"msg": message}
 
-    msgjson = json.dumps(messageobj)
+    msg_json = json.dumps(message_obj)
     connection = pika.BlockingConnection(pika.ConnectionParameters(host="rabbitmq"))
     channel = connection.channel()
     channel.exchange_declare(exchange="request", exchange_type=TOPIC)
     channel.basic_publish(
         exchange="request",
         routing_key=REQUEST_NOTIFICATION_TOPIC,
-        body=msgjson,
+        body=msg_json,
         properties=pika.BasicProperties(delivery_mode=2),
     )
 
@@ -77,11 +77,11 @@ def callback(
     Executed once a message is received
     """
 
-    messageobj = json.loads(body)
+    message_obj = json.loads(body)
     user_id = "user"
     try:
         # write to db
-        send_mail(user_id, messageobj)
+        send_mail(user_id, message_obj)
     except ValueError:
         channel.basic_nack(delivery_tag=method.delivery_tag, requeue=False)
     else:
