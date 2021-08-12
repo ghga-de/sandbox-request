@@ -21,7 +21,8 @@ from sandbox_request.channels import send_mail
 
 
 async def approve_request(request_id: str):
-    """approves a request.
+    """
+    approves a request.
 
     Args:
         request_id (str): id of the request.
@@ -35,7 +36,8 @@ async def approve_request(request_id: str):
 
 
 async def reject_request(request_id: str):
-    """rejects a request.
+    """
+    rejects a request.
 
     Args:
         request_id (str): id of the request.
@@ -46,3 +48,10 @@ async def reject_request(request_id: str):
     if request["status"] == "requested":
         await update_request(request_id, {"status": "rejected"})
     send_mail(user_id, "request rejected for dataset " + dataset_id)
+
+
+async def get_all_datasets():
+    """
+    get all datasets from metadata service
+    """
+    # sandbox_metadata.metadata_service.routes.get_all_datasets()
