@@ -1,6 +1,3 @@
-"""
-    Module __init__.py
-"""
 # Copyright 2021 Universität Tübingen, DKFZ and EMBL
 # for the German Human Genome-Phenome Archive (GHGA)
 #
@@ -15,5 +12,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""
+    Module __init__.py
+"""
+
 
 __version__ = "0.1.0"
