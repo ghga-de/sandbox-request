@@ -32,3 +32,14 @@ class Request(BaseModel):
     dataset_id: str
     purpose: str
     status: Optional[str] = None
+
+
+class RequestPartial(BaseModel):
+    """
+    Class Request for partial updates (PATCH).
+    Only a subset of attributes of Request can
+    be modified.
+    """
+
+    purpose: Optional[str] = None
+    status: Optional[str] = None

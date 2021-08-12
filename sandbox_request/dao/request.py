@@ -17,14 +17,15 @@
 # limitations under the License.
 
 
-from typing import Dict
+from typing import Union, List
 from sandbox_request.database import Database
 from sandbox_request.channels import send_mail
+from sandbox_request.models import Request, RequestPartial
 
 COLLECTION_NAME = "requests"
 
 
-async def get_all_requests() -> object:
+async def get_all_requests() -> List[Request]:
     """
     get list of all requests
 
@@ -33,41 +34,49 @@ async def get_all_requests() -> object:
     """
     database = Database()
     collection = await database.get_collection(name=COLLECTION_NAME)
-    requests = collection.find()  # type: ignore
-    return await requests.to_list(None)
+    request_dicts = await collection.find().to_list(None)  # type: ignore
+    requests = [Request(**request_dict) for request_dict in request_dicts]
+    return requests
 
 
-async def get_request(request_id):
+async def get_request(request_id: str) -> Request:
     """
     get request
     """
     database = Database()
     collection = await database.get_collection(name=COLLECTION_NAME)
-    request = await collection.find_one({"id": request_id})  # type: ignore
+    request_dict = await collection.find_one({"id": request_id})  # type: ignore
+    request = Request(**request_dict)
     return request
 
 
-async def add_request(data: Dict):
+async def add_request(data: Request) -> Request:
     """
     add new request
     """
     database = Database()
     collection = await database.get_collection(name=COLLECTION_NAME)
-    request_id = data["id"]
-    await collection.insert_one(data)  # type: ignore
-    dataset = await get_request(request_id)
+    request_id = data.id
+    await collection.insert_one(data.dict())  # type: ignore
+    request = await get_request(request_id)
     send_mail("data_steward", "request_made")
-    return dataset
+    return request
 
 
-async def update_request(request_id: str, data: dict):
+async def update_request(
+    request_id: str, data: Union[Request, RequestPartial]
+) -> Request:
     """
     update a request
     """
     database = Database()
     collection = await database.get_collection(name=COLLECTION_NAME)
-    collection.update_one({"id": request_id}, {"$set": data})  # type: ignore
-    return await collection.find_one({"id": request_id})  # type: ignore
+    collection.update_one(  # type: ignore
+        {"id": request_id}, {"$set": data.dict(exclude_unset=True)}
+    )
+    request_dict = await collection.find_one({"id": request_id})  # type: ignore
+    request = Request(**request_dict)
+    return request
 
 
 async def delete_request(request_id: str):
