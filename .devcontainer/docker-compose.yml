@@ -27,10 +27,6 @@ services:
     # Uncomment the next line to use a non-root user for all processes.
     # user: vscode
 
-    networks:
-        - ghga_mnet
-
-
     # Use "forwardPorts" in **devcontainer.json** to forward an app port locally.
     # (Adding the "ports" property to this file will not forward from a Codespace.)
 
@@ -54,12 +50,6 @@ services:
       ports:
         - 5672:5672
         - 15672:15672
-      networks:
-        - ghga_mnet
 
 volumes:
   mongodb-data:
-
-networks:
-  ghga_mnet:
-    driver: bridge
