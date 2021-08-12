@@ -16,7 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import List, Dict
+from typing import List
 from fastapi import APIRouter
 from fastapi.exceptions import HTTPException
 
@@ -27,8 +27,7 @@ from sandbox_request.dao.request import (
     update_request,
     delete_request,
 )
-from sandbox_request.models import Request
-from sandbox_request.core.process_requests import approve_request, reject_request
+from sandbox_request.models import Request, RequestPartial
 
 
 request_router = APIRouter()
@@ -66,7 +65,7 @@ async def get_one_request(request_id):
 
 
 @request_router.post("/requests", response_model=Request)
-async def add_requests(data: Dict):
+async def add_requests(data: Request):
     """add request
 
     Args:
@@ -79,8 +78,8 @@ async def add_requests(data: Dict):
     return request
 
 
-@request_router.put("/requests/{request_id}", response_model=Request)
-async def update_requests(request_id, data: Dict):
+@request_router.patch("/requests/{request_id}", response_model=Request)
+async def update_requests(request_id, data: RequestPartial):
     """update request
 
     Args:
@@ -102,23 +101,3 @@ async def delete_requests(request_id):
         request_id ([type]): [description]
     """
     await delete_request(request_id=request_id)
-
-
-@request_router.post("/approveRequests/{request_id}", response_model=Request)
-async def approve_requests(request_id: str):
-    """calls approve_request from process_requests
-
-    Args:
-        request_id (str): request_id
-    """
-    await approve_request(request_id)
-
-
-@request_router.post("/rejectRequests/{request_id}", response_model=Request)
-async def reject_requests(request_id: str):
-    """calls reject_request from process_requests
-
-    Args:
-        request_id (str): [description]
-    """
-    await reject_request(request_id)
