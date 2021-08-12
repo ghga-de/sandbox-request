@@ -31,7 +31,7 @@ class Request(BaseModel):
     user_id: str
     dataset_id: str
     purpose: str
-    status: Optional[str] = None
+    status: str
 
 
 class RequestPartial(BaseModel):

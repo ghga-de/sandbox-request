@@ -16,10 +16,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
 from typing import List
 from fastapi import APIRouter
 from fastapi.exceptions import HTTPException
 
+from sandbox_request.channels import send_mail
 from sandbox_request.dao.request import (
     get_all_requests,
     get_request,
@@ -90,6 +92,7 @@ async def update_requests(request_id, data: RequestPartial):
         [type]: [description]
     """
     request = await update_request(request_id, data)
+    send_mail(request.user_id, request.status)
     return request
 
 
