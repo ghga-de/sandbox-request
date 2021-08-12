@@ -4,9 +4,10 @@
 cd /workspace
 
 # install in edit mode
-pip install -e .
+pip install -e ".[all]"
 
-pip install pre-commit
+# load mongodb:
+python scripts/load_mongodb.py
 
 # install pre-commit hooks to git:
 pre-commit install
