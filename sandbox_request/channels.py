@@ -17,7 +17,15 @@
 # limitations under the License.
 
 
-STORAGE_NOTIFICATION_TOPIC = "storage.notification"
+import json
+import pika
+
+REQUEST_NOTIFICATION_TOPIC = "request-notification"
+STORAGE_REQUEST_TOPIC = "request-notification"
+STORAGE_REQUEST_QUEUE = "storage-request"
+EXCHANGE_STORAGE = "storage"
+EXCHANGE_REQUEST = "request"
+TOPIC = "topic"
 
 
 def send_mail(user_id: str, message: str):
@@ -36,3 +44,66 @@ def subscribe_to_storage():
     call the sandbox_notification.topics.subscribe()
     """
     # sandbox_notification.topics.subscribe(STORAGE_NOTIFICATION_TOPIC)
+    subscribe(EXCHANGE_STORAGE, STORAGE_REQUEST_TOPIC, STORAGE_REQUEST_QUEUE)
+
+
+def publish_topic():
+    """
+    Run a test for publishing a notification.
+    """
+    messageobj = {"msg": "msg"}
+
+    msgjson = json.dumps(messageobj)
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host="rabbitmq"))
+    channel = connection.channel()
+    channel.exchange_declare(exchange="request", exchange_type=TOPIC)
+    channel.basic_publish(
+        exchange="request",
+        routing_key=REQUEST_NOTIFICATION_TOPIC,
+        body=msgjson,
+        properties=pika.BasicProperties(delivery_mode=2),
+    )
+
+    connection.close()
+
+
+def callback(
+    channel: pika.channel.Channel,
+    method: pika.spec.Basic.Deliver,
+    _: pika.spec.BasicProperties,
+    body: str,
+):
+    """
+    Executed once a message is received
+    """
+
+    messageobj = json.loads(body)
+    user_id = "user"
+    try:
+        # write to db
+        send_mail(user_id, messageobj)
+    except ValueError:
+        channel.basic_nack(delivery_tag=method.delivery_tag, requeue=False)
+    else:
+        channel.basic_ack(delivery_tag=method.delivery_tag)
+
+
+def subscribe(exchange, topic_str, queue):
+    """
+    Subscribe this consumer to a topic or set of topics based on a
+    topic string as defined in the AMQP 0.9.1 specification.
+    """
+
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host="rabbitmq"))
+    channel = connection.channel()
+
+    channel.exchange_declare(exchange=exchange, exchange_type=TOPIC)
+
+    result = channel.queue_declare(queue=queue, durable=True)
+    queue_name = result.method.queue
+
+    channel.queue_bind(exchange=exchange, queue=queue, routing_key=topic_str)
+
+    channel.basic_qos(prefetch_count=1)
+    channel.basic_consume(queue=queue_name, on_message_callback=callback)
+    channel.start_consuming()

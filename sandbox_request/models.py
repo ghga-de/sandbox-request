@@ -1,6 +1,7 @@
 """
-    Module aoi.py
+    Module models.py
 """
+
 # Copyright 2021 Universität Tübingen, DKFZ and EMBL
 # for the German Human Genome-Phenome Archive (GHGA)
 #
@@ -16,14 +17,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from fastapi import FastAPI
 
-from sandbox_request.database import Database
-from sandbox_request.routes.requests import request_router
+from typing import Optional
+from pydantic import BaseModel
 
-app = FastAPI(title="Request Service API")
-database = Database()
 
-app.include_router(request_router)
-app.add_event_handler("startup", database.get_db)
-app.add_event_handler("shutdown", database.close_db)
+class Request(BaseModel):
+    """
+    Class Request
+    """
+
+    id: str
+    user_id: str
+    dataset_id: str
+    purpose: str
+    status: Optional[str] = None

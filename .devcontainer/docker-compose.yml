@@ -27,6 +27,10 @@ services:
     # Uncomment the next line to use a non-root user for all processes.
     # user: vscode
 
+    networks:
+        - ghga_mnet
+
+
     # Use "forwardPorts" in **devcontainer.json** to forward an app port locally.
     # (Adding the "ports" property to this file will not forward from a Codespace.)
 
@@ -41,5 +45,21 @@ services:
     ports:
       - 27017:27017
 
+  rabbitmq:
+      image: rabbitmq:3-management
+      container_name: 'rabbitmq'
+      hostname: 'rabbitmq'
+
+      # (Adding the "ports" property to this file will not forward from a Codespace.)
+      ports:
+        - 5672:5672
+        - 15672:15672
+      networks:
+        - ghga_mnet
+
 volumes:
   mongodb-data:
+
+networks:
+  ghga_mnet:
+    driver: bridge

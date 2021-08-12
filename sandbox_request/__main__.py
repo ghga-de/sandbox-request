@@ -1,5 +1,5 @@
 """
-    Module aoi.py
+    Module main.py
 """
 # Copyright 2021 Universität Tübingen, DKFZ and EMBL
 # for the German Human Genome-Phenome Archive (GHGA)
@@ -16,14 +16,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from fastapi import FastAPI
+from typing import Optional
+import typer
+import uvicorn
+from sandbox_request.api import app
 
-from sandbox_request.database import Database
-from sandbox_request.routes.requests import request_router
 
-app = FastAPI(title="Request Service API")
-database = Database()
+def run(config: Optional[str] = typer.Option(None, help="Path to config yaml.")):
+    """
+    Starts backend server
+    """
+    print(config)
+    uvicorn.run(app)
 
-app.include_router(request_router)
-app.add_event_handler("startup", database.get_db)
-app.add_event_handler("shutdown", database.close_db)
+
+def run_cli():
+    """
+    Run the command line interface
+    """
+    typer.run(run)
+
+
+if __name__ == "__main__":
+    run_cli()

@@ -36,10 +36,9 @@ request_router = APIRouter()
 
 @request_router.get("/requests", response_model=List[Request])
 async def get_requests():
-    """[summary]
+    """get requests
 
-    Returns:
-        [type]: [description]
+    Returns: requests
     """
     requests = await get_all_requests()
     return requests
@@ -47,7 +46,7 @@ async def get_requests():
 
 @request_router.get("/requests/{request_id}", response_model=Request)
 async def get_one_request(request_id):
-    """[summary]
+    """get one request
 
     Args:
         request_id ([type]): [description]
@@ -68,7 +67,7 @@ async def get_one_request(request_id):
 
 @request_router.post("/requests", response_model=Request)
 async def add_requests(data: Dict):
-    """[summary]
+    """add request
 
     Args:
         data (Dict): [description]
@@ -82,7 +81,7 @@ async def add_requests(data: Dict):
 
 @request_router.put("/requests/{request_id}", response_model=Request)
 async def update_requests(request_id, data: Dict):
-    """[summary]
+    """update request
 
     Args:
         request_id ([type]): [description]
@@ -97,7 +96,7 @@ async def update_requests(request_id, data: Dict):
 
 @request_router.delete("/requests/{request_id}", response_model=Request)
 async def delete_requests(request_id):
-    """[summary]
+    """delete request
 
     Args:
         request_id ([type]): [description]

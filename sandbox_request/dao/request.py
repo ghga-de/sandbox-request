@@ -18,18 +18,22 @@
 
 
 from typing import Dict
-from sandbox_request.database import get_collection
+from sandbox_request.database import Database
 from sandbox_request.channels import send_mail
 
 COLLECTION_NAME = "requests"
 
 
-async def get_all_requests():
+async def get_all_requests() -> object:
     """
     get list of all requests
+
+    Returns:
+        object:
     """
-    collection = await get_collection(COLLECTION_NAME)
-    requests = collection.find()
+    database = Database()
+    collection = await database.get_collection(name=COLLECTION_NAME)
+    requests = collection.find()  # type: ignore
     return await requests.to_list(None)
 
 
@@ -37,8 +41,9 @@ async def get_request(request_id):
     """
     get request
     """
-    collection = await get_collection(COLLECTION_NAME)
-    request = await collection.find_one({"id": request_id})
+    database = Database()
+    collection = await database.get_collection(name=COLLECTION_NAME)
+    request = await collection.find_one({"id": request_id})  # type: ignore
     return request
 
 
@@ -46,9 +51,10 @@ async def add_request(data: Dict):
     """
     add new request
     """
-    collection = await get_collection(COLLECTION_NAME)
+    database = Database()
+    collection = await database.get_collection(name=COLLECTION_NAME)
     request_id = data["id"]
-    await collection.insert_one(data)
+    await collection.insert_one(data)  # type: ignore
     dataset = await get_request(request_id)
     send_mail("data_steward", "request_made")
     return dataset
@@ -58,14 +64,16 @@ async def update_request(request_id: str, data: dict):
     """
     update a request
     """
-    collection = await get_collection(COLLECTION_NAME)
-    collection.update_one({"id": request_id}, {"$set": data})
-    return await collection.find_one({"id": request_id})
+    database = Database()
+    collection = await database.get_collection(name=COLLECTION_NAME)
+    collection.update_one({"id": request_id}, {"$set": data})  # type: ignore
+    return await collection.find_one({"id": request_id})  # type: ignore
 
 
 async def delete_request(request_id: str):
     """
     delete a request
     """
-    collection = await get_collection(COLLECTION_NAME)
-    collection.delete_one({"id": request_id})
+    database = Database()
+    collection = await database.get_collection(name=COLLECTION_NAME)
+    collection.delete_one({"id": request_id})  # type: ignore
