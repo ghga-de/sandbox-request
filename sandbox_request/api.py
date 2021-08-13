@@ -13,17 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM python:3.9.6-buster
+"""Definition of RESTful API endpoints"""
 
-COPY . /service
-WORKDIR /service
-RUN pip install .
+from fastapi import FastAPI
 
-# create new user and execute as that user
-RUN useradd --create-home appuser
-WORKDIR /home/appuser
-USER appuser
+from sandbox_request.dao.db_connect import Database
+from sandbox_request.routes.requests import request_router
 
-EXPOSE 8080
+app = FastAPI(title="Request Service API")
+database = Database()
 
-ENTRYPOINT [ "sandbox-request" ]
+app.include_router(request_router)
+app.add_event_handler("startup", database.get_db)
+app.add_event_handler("shutdown", database.close_db)

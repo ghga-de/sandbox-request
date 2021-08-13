@@ -13,17 +13,31 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM python:3.9.6-buster
 
-COPY . /service
-WORKDIR /service
-RUN pip install .
+"""Defines all dataclasses/classes pertaining to a data model or schema"""
 
-# create new user and execute as that user
-RUN useradd --create-home appuser
-WORKDIR /home/appuser
-USER appuser
+from typing import Optional
+from pydantic import BaseModel
 
-EXPOSE 8080
 
-ENTRYPOINT [ "sandbox-request" ]
+class Request(BaseModel):
+    """
+    Class Request
+    """
+
+    id: str
+    user_id: str
+    dataset_id: str
+    purpose: str
+    status: str
+
+
+class RequestPartial(BaseModel):
+    """
+    Class Request for partial updates (PATCH).
+    Only a subset of attributes of Request can
+    be modified.
+    """
+
+    purpose: Optional[str] = None
+    status: Optional[str] = None

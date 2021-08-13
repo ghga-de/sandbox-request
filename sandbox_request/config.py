@@ -13,17 +13,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM python:3.9.6-buster
+"""Config Parameter Modeling and Parsing"""
 
-COPY . /service
-WORKDIR /service
-RUN pip install .
+from functools import lru_cache
+from ghga_service_chassis_lib.config import config_from_yaml
+from ghga_service_chassis_lib.api import ApiConfigBase
 
-# create new user and execute as that user
-RUN useradd --create-home appuser
-WORKDIR /home/appuser
-USER appuser
 
-EXPOSE 8080
+@config_from_yaml(prefix="sandbox_request")
+class Config(ApiConfigBase):
+    """Config parameters and their defaults."""
 
-ENTRYPOINT [ "sandbox-request" ]
+    # config parameter needed for the api server
+    # are inherited from ApiConfigBase
+
+    # additional parameters will go here:
+    db_url: str = "mongodb://localhost:27017"
+    db_name: str = "sandbox_requests_db"
+
+
+@lru_cache
+def get_config():
+    """Get runtime configuration."""
+    return Config()

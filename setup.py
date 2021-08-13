@@ -1,3 +1,7 @@
+"""
+Module setup.py
+"""
+
 # Copyright 2021 Universität Tübingen, DKFZ and EMBL
 # for the German Human Genome-Phenome Archive (GHGA)
 #
@@ -13,17 +17,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM python:3.9.6-buster
+import setuptools
 
-COPY . /service
-WORKDIR /service
-RUN pip install .
-
-# create new user and execute as that user
-RUN useradd --create-home appuser
-WORKDIR /home/appuser
-USER appuser
-
-EXPOSE 8080
-
-ENTRYPOINT [ "sandbox-request" ]
+if __name__ == "__main__":
+    setuptools.setup()
