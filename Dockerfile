@@ -17,13 +17,13 @@ FROM python:3.9.6-buster
 
 COPY . /service
 WORKDIR /service
-RUN pip install -r requirements.txt
+RUN pip install .
 
 # create new user and execute as that user
 RUN useradd --create-home appuser
 WORKDIR /home/appuser
 USER appuser
 
-EXPOSE 8000
+EXPOSE 8080
 
-CMD ["uvicorn", "--host", "0.0.0.0", "--port", "8000", "sandbox_request.api:app"]
+ENTRYPOINT [ "sandbox-request" ]
