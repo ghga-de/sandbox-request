@@ -28,7 +28,8 @@ class Config(ApiConfigBase):
     # are inherited from ApiConfigBase
 
     # additional parameters will go here:
-    ...
+    db_url: str = "mongodb://localhost:27017"
+    db_name: str = "sandbox_requests_db"
 
 
 @lru_cache
