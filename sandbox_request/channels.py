@@ -1,6 +1,3 @@
-"""
-    Module channels.py
-"""
 # Copyright 2021 Universität Tübingen, DKFZ and EMBL
 # for the German Human Genome-Phenome Archive (GHGA)
 #
@@ -16,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""Defines all async pub/sub communication"""
 
 import json
 import pika
@@ -36,14 +34,12 @@ def send_mail(user_id: str, message: str):
         message (str): message to be sent
     """
     print(user_id, message)
-    # sandbox_notification.core.send_mail(user_id, message)
 
 
 def subscribe_to_storage():
     """
     call the sandbox_notification.topics.subscribe()
     """
-    # sandbox_notification.topics.subscribe(STORAGE_NOTIFICATION_TOPIC)
     subscribe(EXCHANGE_STORAGE, STORAGE_REQUEST_TOPIC, STORAGE_REQUEST_QUEUE)
 
 

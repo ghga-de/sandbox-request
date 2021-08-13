@@ -1,6 +1,3 @@
-"""
-    Module request.py
-"""
 # Copyright 2021 Universität Tübingen, DKFZ and EMBL
 # for the German Human Genome-Phenome Archive (GHGA)
 #
@@ -16,9 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+    Wrappers around DB queries related to requests
+"""
 
 from typing import Union, List
-from sandbox_request.database import Database
+from sandbox_request.dao.db_connect import Database
 from sandbox_request.channels import send_mail
 from sandbox_request.models import Request, RequestPartial
 

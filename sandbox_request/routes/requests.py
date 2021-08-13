@@ -1,6 +1,3 @@
-"""
-    Module requests.py
-"""
 # Copyright 2021 Universität Tübingen, DKFZ and EMBL
 # for the German Human Genome-Phenome Archive (GHGA)
 #
@@ -16,6 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+    All request related endpoints
+"""
 
 from typing import List
 from fastapi import APIRouter
