@@ -1,7 +1,3 @@
-"""
-    Module database.py
-"""
-
 # Copyright 2021 Universität Tübingen, DKFZ and EMBL
 # for the German Human Genome-Phenome Archive (GHGA)
 #
@@ -17,10 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import motor.motor_asyncio
+"""
+    Database connection handling
+"""
 
-DB_URL = "mongodb://localhost:27017"
-DB_NAME = "sandbox_requests_db"
+import motor.motor_asyncio
+from sandbox_request.config import get_config
 
 
 class Database:
@@ -29,13 +27,16 @@ class Database:
     """
 
     def __init__(self) -> None:
+        config = get_config()
+        self.db_url = config.db_url
+        self.db_name = config.db_name
         self.client = motor.motor_asyncio.AsyncIOMotorClient()
 
     async def get_db(self):
         """
         Return database client instance.
         """
-        self.client = motor.motor_asyncio.AsyncIOMotorClient(DB_URL)
+        self.client = motor.motor_asyncio.AsyncIOMotorClient(self.db_url)
         return self.client
 
     async def close_db(self):
@@ -49,5 +50,5 @@ class Database:
         Get a collection
         """
         client = await self.get_db()
-        collection = client[DB_NAME][name]
+        collection = client[self.db_name][name]
         return collection

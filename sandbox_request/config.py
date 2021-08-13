@@ -13,18 +13,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Entrypoint of the package"""
+"""Config Parameter Modeling and Parsing"""
 
-from ghga_service_chassis_lib.api import run_server
-from sandbox_request.config import get_config
-from sandbox_request.api import app  # noqa: F401 pylint: disable=unused-import
-
-
-def run():
-    """Run the service"""
-    # Please adapt to package name
-    run_server(app="sandbox_request.__main__:app", config=get_config())
+from functools import lru_cache
+from ghga_service_chassis_lib.config import config_from_yaml
+from ghga_service_chassis_lib.api import ApiConfigBase
 
 
-if __name__ == "__main__":
-    run()
+@config_from_yaml(prefix="sandbox_request")
+class Config(ApiConfigBase):
+    """Config parameters and their defaults."""
+
+    # config parameter needed for the api server
+    # are inherited from ApiConfigBase
+
+    # additional parameters will go here:
+    db_url: str = "mongodb://localhost:27017"
+    db_name: str = "sandbox_requests_db"
+
+
+@lru_cache
+def get_config():
+    """Get runtime configuration."""
+    return Config()

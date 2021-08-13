@@ -1,7 +1,3 @@
-"""
-    Module models.py
-"""
-
 # Copyright 2021 Universität Tübingen, DKFZ and EMBL
 # for the German Human Genome-Phenome Archive (GHGA)
 #
@@ -17,6 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
+"""Defines all dataclasses/classes pertaining to a data model or schema"""
 
 from typing import Optional
 from pydantic import BaseModel

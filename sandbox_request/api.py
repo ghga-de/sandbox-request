@@ -1,6 +1,3 @@
-"""
-    Module aoi.py
-"""
 # Copyright 2021 Universität Tübingen, DKFZ and EMBL
 # for the German Human Genome-Phenome Archive (GHGA)
 #
@@ -16,9 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""Definition of RESTful API endpoints"""
+
 from fastapi import FastAPI
 
-from sandbox_request.database import Database
+from sandbox_request.dao.db_connect import Database
 from sandbox_request.routes.requests import request_router
 
 app = FastAPI(title="Request Service API")
