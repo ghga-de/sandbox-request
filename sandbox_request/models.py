@@ -25,10 +25,9 @@ class Request(BaseModel):
     Class Request
     """
 
-    _id: str
     dataset_id: str
     purpose: str
-    request_id: str
+    request_id: Optional[str] = None
     status: str
     user_id: str
 
