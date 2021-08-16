@@ -2,29 +2,29 @@
   "requests": [
     {
       "dataset_id": "DAT:0000001",
-      "id": "REQ:0000001",
       "purpose": "Science",
+      "request_id": "REQ:0000001",
       "status": "requested",
       "user_id": "user_1"
     },
     {
       "dataset_id": "DAT:0000002",
-      "id": "REQ:0000002",
       "purpose": "Science",
+      "request_id": "REQ:0000002",
       "status": "requested",
       "user_id": "user_2"
     },
     {
       "dataset_id": "DAT:0000001",
-      "id": "REQ:0000003",
       "purpose": "Science",
+      "request_id": "REQ:0000003",
       "status": "requested",
       "user_id": "user_2"
     },
     {
       "dataset_id": "DAT:0000002",
-      "id": "REQ:0000004",
       "purpose": "Science",
+      "request_id": "REQ:0000004",
       "status": "requested",
       "user_id": "user_3"
     }

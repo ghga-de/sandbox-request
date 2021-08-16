@@ -18,11 +18,12 @@
 """
 
 from typing import Union, List
-from sandbox_request.dao.db_connect import Database
+from sandbox_request.dao.db_connect import DBConnect
 from sandbox_request.channels import send_mail
 from sandbox_request.models import Request, RequestPartial
 
 COLLECTION_NAME = "requests"
+COUNTER = "counter"
 
 
 async def get_all_requests() -> List[Request]:
@@ -32,10 +33,11 @@ async def get_all_requests() -> List[Request]:
     Returns:
         object:
     """
-    database = Database()
-    collection = await database.get_collection(name=COLLECTION_NAME)
+    db_connect = DBConnect()
+    collection = await db_connect.get_collection(name=COLLECTION_NAME)
     request_dicts = await collection.find().to_list(None)  # type: ignore
     requests = [Request(**request_dict) for request_dict in request_dicts]
+    await db_connect.close_db()
     return requests
 
 
@@ -43,10 +45,11 @@ async def get_request(request_id: str) -> Request:
     """
     get request
     """
-    database = Database()
-    collection = await database.get_collection(name=COLLECTION_NAME)
-    request_dict = await collection.find_one({"id": request_id})  # type: ignore
+    db_connect = DBConnect()
+    collection = await db_connect.get_collection(name=COLLECTION_NAME)
+    request_dict = await collection.find_one({"request_id": request_id})  # type: ignore
     request = Request(**request_dict)
+    await db_connect.close_db()
     return request
 
 
@@ -54,13 +57,27 @@ async def add_request(data: Request) -> Request:
     """
     add new request
     """
-    database = Database()
-    collection = await database.get_collection(name=COLLECTION_NAME)
-    request_id = data.id
+    db_connect = DBConnect()
+    collection = await db_connect.get_collection(name=COLLECTION_NAME)
+    request_id = await get_next_request_id(COUNTER, COLLECTION_NAME)
+    data.request_id = request_id
     await collection.insert_one(data.dict())  # type: ignore
     request = await get_request(request_id)
-    send_mail("data_steward", "request_made")
+    send_mail(data.user_id, "requested")
+    await db_connect.close_db()
     return request
+
+
+async def get_next_request_id(counter, collection_name):
+    """
+    This method generates the sequence id for the MongoDB document
+    """
+    db_connect = DBConnect()
+    collection = await db_connect.get_collection(name=counter)
+    document = await collection.find_one({"_id": collection_name})  # type: ignore
+    collection.update_one({"_id": collection_name}, {"$inc": {"value": 1}})  # type: ignore
+    await db_connect.close_db()
+    return "REQ:" + str(document["value"] + 1)
 
 
 async def update_request(
@@ -69,13 +86,14 @@ async def update_request(
     """
     update a request
     """
-    database = Database()
-    collection = await database.get_collection(name=COLLECTION_NAME)
+    db_connect = DBConnect()
+    collection = await db_connect.get_collection(name=COLLECTION_NAME)
     collection.update_one(  # type: ignore
-        {"id": request_id}, {"$set": data.dict(exclude_unset=True)}
+        {"request_id": request_id}, {"$set": data.dict(exclude_unset=True)}
     )
-    request_dict = await collection.find_one({"id": request_id})  # type: ignore
+    request_dict = await collection.find_one({"request_id": request_id})  # type: ignore
     request = Request(**request_dict)
+    await db_connect.close_db()
     return request
 
 
@@ -83,6 +101,7 @@ async def delete_request(request_id: str):
     """
     delete a request
     """
-    database = Database()
-    collection = await database.get_collection(name=COLLECTION_NAME)
-    collection.delete_one({"id": request_id})  # type: ignore
+    db_connect = DBConnect()
+    collection = await db_connect.get_collection(name=COLLECTION_NAME)
+    collection.delete_one({"request_id": request_id})  # type: ignore
+    await db_connect.close_db()

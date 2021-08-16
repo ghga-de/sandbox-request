@@ -21,7 +21,7 @@ import motor.motor_asyncio
 from sandbox_request.config import get_config
 
 
-class Database:
+class DBConnect:
     """
     class Database
     """
