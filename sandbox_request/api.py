@@ -16,11 +16,14 @@
 """Definition of RESTful API endpoints"""
 
 from fastapi import FastAPI
+from ghga_service_chassis_lib.api import configure_app
 
+from sandbox_request.config import get_config
 from sandbox_request.dao.db_connect import Database
 from sandbox_request.routes.requests import request_router
 
 app = FastAPI(title="Request Service API")
+configure_app(app, config=get_config())
 database = Database()
 
 app.include_router(request_router)
