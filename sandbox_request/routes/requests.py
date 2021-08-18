@@ -45,18 +45,18 @@ async def get_requests():
     return requests
 
 
-@request_router.get("/requests/{request_id}", response_model=Request)
+@request_router.get("/requests/{id}", response_model=Request)
 async def get_one_request(request_id):
     """get one request
 
     Args:
-        request_id ([type]): [description]
+        request_id (str):
 
     Raises:
-        HTTPException: [description]
+        HTTPException:
 
     Returns:
-        [type]: [description]
+        Request:
     """
     request = await get_request(request_id)
     if not request:
@@ -71,36 +71,36 @@ async def add_requests(data: Request):
     """add request
 
     Args:
-        data (Dict): [description]
+        data (Request):
 
     Returns:
-        [type]: [description]
+        Request:
     """
     request = await add_request(data)
     return request
 
 
-@request_router.patch("/requests/{request_id}", response_model=Request)
+@request_router.patch("/requests/{id}", response_model=Request)
 async def update_requests(request_id, data: RequestPartial):
     """update request
 
     Args:
-        request_id ([type]): [description]
-        data (Dict): [description]
+        request_id (str):
+        data (RequestPartial):
 
     Returns:
-        [type]: [description]
+        Request:
     """
     request = await update_request(request_id, data)
     send_mail(request.user_id, request.status)
     return request
 
 
-@request_router.delete("/requests/{request_id}", response_model=Request)
+@request_router.delete("/requests/{id}", response_model=Request)
 async def delete_requests(request_id):
     """delete request
 
     Args:
-        request_id ([type]): [description]
+        request_id (str):
     """
     await delete_request(request_id=request_id)

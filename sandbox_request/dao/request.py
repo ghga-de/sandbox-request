@@ -47,7 +47,7 @@ async def get_request(request_id: str) -> Request:
     """
     db_connect = DBConnect()
     collection = await db_connect.get_collection(name=COLLECTION_NAME)
-    request_dict = await collection.find_one({"request_id": request_id})  # type: ignore
+    request_dict = await collection.find_one({"id": request_id})  # type: ignore
     request = Request(**request_dict)
     await db_connect.close_db()
     return request
@@ -60,7 +60,7 @@ async def add_request(data: Request) -> Request:
     db_connect = DBConnect()
     collection = await db_connect.get_collection(name=COLLECTION_NAME)
     request_id = await get_next_request_id(COUNTER, COLLECTION_NAME)
-    data.request_id = request_id
+    data.id = request_id
     await collection.insert_one(data.dict())  # type: ignore
     request = await get_request(request_id)
     send_mail(data.user_id, "requested")
@@ -77,7 +77,7 @@ async def get_next_request_id(counter, collection_name):
     document = await collection.find_one({"_id": collection_name})  # type: ignore
     collection.update_one({"_id": collection_name}, {"$inc": {"value": 1}})  # type: ignore
     await db_connect.close_db()
-    return "REQ:" + str(document["value"] + 1)
+    return f"REQ:{(document['value'] + 1):07}"
 
 
 async def update_request(
@@ -89,9 +89,9 @@ async def update_request(
     db_connect = DBConnect()
     collection = await db_connect.get_collection(name=COLLECTION_NAME)
     collection.update_one(  # type: ignore
-        {"request_id": request_id}, {"$set": data.dict(exclude_unset=True)}
+        {"id": request_id}, {"$set": data.dict(exclude_unset=True)}
     )
-    request_dict = await collection.find_one({"request_id": request_id})  # type: ignore
+    request_dict = await collection.find_one({"id": request_id})  # type: ignore
     request = Request(**request_dict)
     await db_connect.close_db()
     return request
@@ -103,5 +103,5 @@ async def delete_request(request_id: str):
     """
     db_connect = DBConnect()
     collection = await db_connect.get_collection(name=COLLECTION_NAME)
-    collection.delete_one({"request_id": request_id})  # type: ignore
+    collection.delete_one({"id": request_id})  # type: ignore
     await db_connect.close_db()
