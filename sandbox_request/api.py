@@ -17,12 +17,12 @@
 
 from fastapi import FastAPI
 
-from sandbox_request.dao.db_connect import Database
+from sandbox_request.dao.db_connect import DBConnect
 from sandbox_request.routes.requests import request_router
 
 app = FastAPI(title="Request Service API")
-database = Database()
+db_connect = DBConnect()
 
 app.include_router(request_router)
-app.add_event_handler("startup", database.get_db)
-app.add_event_handler("shutdown", database.close_db)
+app.add_event_handler("startup", db_connect.get_db)
+app.add_event_handler("shutdown", db_connect.close_db)

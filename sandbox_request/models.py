@@ -25,11 +25,11 @@ class Request(BaseModel):
     Class Request
     """
 
-    id: str
-    user_id: str
     dataset_id: str
     purpose: str
+    id: Optional[str] = None
     status: str
+    user_id: str
 
 
 class RequestPartial(BaseModel):
@@ -40,4 +40,5 @@ class RequestPartial(BaseModel):
     """
 
     purpose: Optional[str] = None
+    id: str
     status: Optional[str] = None
