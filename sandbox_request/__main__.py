@@ -18,12 +18,14 @@
 from ghga_service_chassis_lib.api import run_server
 from sandbox_request.config import get_config
 from sandbox_request.api import app  # noqa: F401 pylint: disable=unused-import
+from sandbox_request.pubsub import subscribe
 
 
 def run():
     """Run the service"""
     # Please adapt to package name
     run_server(app="sandbox_request.__main__:app", config=get_config())
+    subscribe()
 
 
 if __name__ == "__main__":

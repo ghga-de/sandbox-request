@@ -19,7 +19,6 @@
 
 from typing import Union, List
 from sandbox_request.dao.db_connect import DBConnect
-from sandbox_request.channels import send_mail
 from sandbox_request.models import Request, RequestPartial
 
 COLLECTION_NAME = "requests"
@@ -63,7 +62,6 @@ async def add_request(data: Request) -> Request:
     data.id = request_id
     await collection.insert_one(data.dict())  # type: ignore
     request = await get_request(request_id)
-    send_mail(data.user_id, "requested")
     await db_connect.close_db()
     return request
 
