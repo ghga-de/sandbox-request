@@ -60,7 +60,9 @@ async def get_one_request(request_id):
     """
     request = await get_request(request_id)
     if not request:
-        raise HTTPException(status_code=404, detail=f"Request with id '{id}' not found")
+        raise HTTPException(
+            status_code=404, detail=f"Request with id '{request_id}' not found"
+        )
     return request
 
 
