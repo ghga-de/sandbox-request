@@ -19,7 +19,6 @@
 
 from typing import Union, List
 from sandbox_request.dao.db_connect import DBConnect
-from sandbox_request.channels import send_mail
 from sandbox_request.models import Request, RequestPartial, StatusEnum
 
 COLLECTION_NAME = "requests"
@@ -64,7 +63,6 @@ async def add_request(data: Request) -> Request:
     data.status = StatusEnum.PENDING
     await collection.insert_one(data.dict())  # type: ignore
     request = await get_request(request_id)
-    send_mail(data.user_id, data.status.value)
     await db_connect.close_db()
     return request
 
