@@ -4,7 +4,7 @@ log_level: info
 auto_reload: false
 workers: 1
 db_url: mongodb://localhost:27017
-db_name: metadata
+db_name: request
 cors_allowed_origins: ["http://the-other-domain-to-accept.xy"]
 cors_allow_credentials: true
 cors_allowed_methods: ["*"]
