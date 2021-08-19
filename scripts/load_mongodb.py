@@ -20,6 +20,11 @@ import asyncio
 import json
 import motor.motor_asyncio
 
+DB_NAME = "sandbox_requests_db"
+REQUESTS = "requests"
+COUNTER = "counter"
+COUNTER_JSON = {"_id": "requests", "value": 4}
+
 
 async def insert_records(db_name, collection_name, records):
     """
@@ -28,6 +33,15 @@ async def insert_records(db_name, collection_name, records):
     client = motor.motor_asyncio.AsyncIOMotorClient()
     collection = client[db_name][collection_name]
     await collection.insert_many(records)
+
+
+async def insert_one(db_name, collection_name, record):
+    """
+    insert counter
+    """
+    client = motor.motor_asyncio.AsyncIOMotorClient()
+    collection = client[db_name][collection_name]
+    await collection.insert_one(record)
 
 
 async def delete_all_records(db_name, collection_name):
@@ -49,13 +63,12 @@ async def get_collection(db_name, collection_name):
     return await result.to_list(None)
 
 
-DB_NAME = "sandbox_requests_db"
-
-with open("examples/requests.json") as file:
-    file_records = json.load(file)
+with open("examples/requests.json") as request_file:
+    file_records = json.load(request_file)
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(delete_all_records(DB_NAME, "requests"))
-    loop.run_until_complete(
-        insert_records(DB_NAME, "requests", file_records["requests"])
-    )
-    print(loop.run_until_complete(get_collection(DB_NAME, "requests")))
+    loop.run_until_complete(delete_all_records(DB_NAME, REQUESTS))
+    loop.run_until_complete(delete_all_records(DB_NAME, COUNTER))
+    loop.run_until_complete(insert_records(DB_NAME, REQUESTS, file_records[REQUESTS]))
+    loop.run_until_complete(insert_one(DB_NAME, COUNTER, COUNTER_JSON))
+    print(loop.run_until_complete(get_collection(DB_NAME, REQUESTS)))
+    print(loop.run_until_complete(get_collection(DB_NAME, COUNTER)))

@@ -19,13 +19,13 @@ from fastapi import FastAPI
 from ghga_service_chassis_lib.api import configure_app
 
 from sandbox_request.config import get_config
-from sandbox_request.dao.db_connect import Database
+from sandbox_request.dao.db_connect import DBConnect
 from sandbox_request.routes.requests import request_router
 
 app = FastAPI(title="Request Service API")
 configure_app(app, config=get_config())
-database = Database()
+db_connect = DBConnect()
 
 app.include_router(request_router)
-app.add_event_handler("startup", database.get_db)
-app.add_event_handler("shutdown", database.close_db)
+app.add_event_handler("startup", db_connect.get_db)
+app.add_event_handler("shutdown", db_connect.close_db)
