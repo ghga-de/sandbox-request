@@ -29,6 +29,33 @@ def get_connection_params():
     )
 
 
+def send_message_notification(received_message: dict):
+    """Send a message when download request message arrives"""
+
+    config = get_config()
+
+    drs_id = received_message["drs_id"]
+    access_id = received_message["access_id"]
+    user_id = received_message["user_id"]
+
+    message = {
+        "recipient_name": "Recipient",
+        "recipient_email": "example@example.com",
+        "message": "A new download request ({}) has arrived from user {} with access_id {}".format(
+            drs_id, user_id, access_id
+        ),
+        "subject": "Download request {}".format(drs_id),
+    }
+
+    topic = AmqpTopic(
+        connection_params=get_connection_params(),
+        topic_name=config.sendnotif_topic_name,
+        service_name="request",
+    )
+
+    topic.publish(message)
+
+
 def subscribe():
     """Subscribes to the `download_request` topic."""
 
@@ -40,4 +67,4 @@ def subscribe():
         service_name="request",
     )
 
-    topic.subscribe_for_ever(exec_on_message=None)
+    topic.subscribe_for_ever(exec_on_message=send_message_notification)

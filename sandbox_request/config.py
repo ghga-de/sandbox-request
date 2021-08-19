@@ -33,6 +33,7 @@ class Config(ApiConfigBase):
     rabbitmq_host: str = "rabbitmq"
     rabbitmq_port: int = 5672
     downloadreq_topic_name: str = "download_request"
+    sendnotif_topic_name: str = "send_notifications"
 
 
 @lru_cache
