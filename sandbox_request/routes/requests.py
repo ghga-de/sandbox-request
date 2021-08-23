@@ -20,8 +20,6 @@
 from typing import List
 from fastapi import APIRouter
 from fastapi.exceptions import HTTPException
-
-from sandbox_request.channels import send_mail
 from sandbox_request.dao.request import (
     get_all_requests,
     get_request,
@@ -45,7 +43,7 @@ async def get_requests():
     return requests
 
 
-@request_router.get("/requests/{id}", response_model=Request)
+@request_router.get("/requests/{request_id}", response_model=Request)
 async def get_one_request(request_id):
     """get one request
 
@@ -80,7 +78,7 @@ async def add_requests(data: Request):
     return request
 
 
-@request_router.patch("/requests/{id}", response_model=Request)
+@request_router.patch("/requests/{request_id}", response_model=Request)
 async def update_requests(request_id, data: RequestPartial):
     """update request
 
@@ -92,15 +90,14 @@ async def update_requests(request_id, data: RequestPartial):
         Request:
     """
     request = await update_request(request_id, data)
-    send_mail(request.user_id, request.status)
     return request
 
 
-@request_router.delete("/requests/{id}", response_model=Request)
+@request_router.delete("/requests/{request_id}", response_model=Request)
 async def delete_requests(request_id):
     """delete request
 
     Args:
         request_id (str):
     """
-    await delete_request(request_id=request_id)
+    await delete_request(request_id)

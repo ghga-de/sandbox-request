@@ -19,8 +19,7 @@
 
 from typing import Union, List
 from sandbox_request.dao.db_connect import DBConnect
-from sandbox_request.channels import send_mail
-from sandbox_request.models import Request, RequestPartial
+from sandbox_request.models import Request, RequestPartial, StatusEnum
 
 COLLECTION_NAME = "requests"
 COUNTER = "counter"
@@ -31,7 +30,7 @@ async def get_all_requests() -> List[Request]:
     get list of all requests
 
     Returns:
-        object:
+        List of Requests
     """
     db_connect = DBConnect()
     collection = await db_connect.get_collection(name=COLLECTION_NAME)
@@ -61,9 +60,9 @@ async def add_request(data: Request) -> Request:
     collection = await db_connect.get_collection(name=COLLECTION_NAME)
     request_id = await get_next_request_id(COUNTER, COLLECTION_NAME)
     data.id = request_id
+    data.status = StatusEnum.PENDING
     await collection.insert_one(data.dict())  # type: ignore
     request = await get_request(request_id)
-    send_mail(data.user_id, "requested")
     await db_connect.close_db()
     return request
 
@@ -88,12 +87,12 @@ async def update_request(
     """
     db_connect = DBConnect()
     collection = await db_connect.get_collection(name=COLLECTION_NAME)
-    collection.update_one(  # type: ignore
-        {"id": request_id}, {"$set": data.dict(exclude_unset=True)}
-    )
-    request_dict = await collection.find_one({"id": request_id})  # type: ignore
-    request = Request(**request_dict)
+    if data.status == StatusEnum.REJECTED or data.status == StatusEnum.APPROVED:
+        collection.update_one(  # type: ignore
+            {"id": request_id}, {"$set": data.dict(exclude_unset=True)}
+        )
     await db_connect.close_db()
+    request = await get_request(request_id)  # type: ignore
     return request
 
 
