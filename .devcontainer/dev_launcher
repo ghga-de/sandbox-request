@@ -1,2 +1,7 @@
 #!/bin/bash
+
+# change into the .devcontainer dir so that the config
+# yaml located there is taken into account:
+cd /workspace/.devcontainer
+
 sandbox-request
