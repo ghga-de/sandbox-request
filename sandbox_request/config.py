@@ -30,10 +30,17 @@ class Config(ApiConfigBase):
     # additional parameters will go here:
     db_url: str = "mongodb://localhost:27017"
     db_name: str = "sandbox_requests_db"
+
     rabbitmq_host: str = "rabbitmq"
     rabbitmq_port: int = 5672
-    downloadreq_topic_name: str = "download_request"
-    sendnotif_topic_name: str = "send_notifications"
+
+    data_requester_email: str
+    data_requester_name: str = "Data Requester"
+    data_steward_email: str
+    data_steward_name: str = "Data Steward"
+
+    topic_name_download_requested: str = "download_request"
+    topic_name_send_notification: str = "send_notifications"
 
 
 @lru_cache
