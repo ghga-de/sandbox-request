@@ -78,6 +78,7 @@ def send_notification_on_download_request(received_message: dict):
     )
 
 
+
 def subscribe():
     """Subscribes to the `download_request` topic."""
 
