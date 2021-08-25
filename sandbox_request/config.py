@@ -30,6 +30,9 @@ class Config(ApiConfigBase):
     # additional parameters will go here:
     db_url: str = "mongodb://localhost:27017"
     db_name: str = "sandbox_requests_db"
+    rabbitmq_host: str = "rabbitmq"
+    rabbitmq_port: int = 5672
+    downloadreq_topic_name: str = "download_request"
 
 
 @lru_cache

@@ -13,29 +13,31 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Entrypoint of the package"""
+"""Defines all async pub/sub communication"""
 
-from ghga_service_chassis_lib.api import run_server
-import typer
-from sandbox_request.config import get_config
-from sandbox_request.api import app  # noqa: F401 pylint: disable=unused-import
-from sandbox_request.pubsub import subscribe
+import pika
+from ghga_service_chassis_lib.pubsub import AmqpTopic
+from .config import get_config
 
 
-cli = typer.Typer()
+def get_connection_params():
+    """Return a configuration object for pika"""
+    config = get_config()
+
+    return pika.ConnectionParameters(
+        host=config.rabbitmq_host, port=config.rabbitmq_port
+    )
 
 
-@cli.command()
-def rest_api():
-    """Serve the RESTful API"""
-    run_server(app="sandbox_request.__main__:app", config=get_config())
+def subscribe():
+    """Subscribes to the `download_request` topic."""
 
+    config = get_config()
 
-@cli.command()
-def async_api():
-    """Run a process that subscribes to relevant async topics."""
-    subscribe()
+    topic = AmqpTopic(
+        connection_params=get_connection_params(),
+        topic_name=config.downloadreq_topic_name,
+        service_name="request",
+    )
 
-
-if __name__ == "__main__":
-    cli()
+    topic.subscribe_for_ever(exec_on_message=None)

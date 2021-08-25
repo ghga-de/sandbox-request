@@ -27,3 +27,4 @@ USER appuser
 EXPOSE 8080
 
 ENTRYPOINT [ "sandbox-request" ]
+CMD [ "rest-api" ]
