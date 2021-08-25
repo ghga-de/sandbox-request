@@ -29,7 +29,7 @@ def get_connection_params():
     )
 
 
-def send_email(
+def send_notification(
     recipient_name: str, recipient_email: str, subject: str, message_text: str
 ):
     """Send an email by publishing to the corresponding topic."""
@@ -61,12 +61,12 @@ def send_email(
     topic.publish(message)
 
 
-def send_email_on_download_request(received_message: dict):
+def send_notification_on_download_request(received_message: dict):
     """Send an email upon receiving a message describing a download request event."""
 
     config = get_config()
 
-    send_email(
+    send_notification(
         recipient_name=config.data_steward_name,
         recipient_email=config.data_steward_email,
         subject=f"Download requested: {received_message['drs_id']}",
@@ -89,4 +89,4 @@ def subscribe():
         service_name="request",
     )
 
-    topic.subscribe_for_ever(exec_on_message=send_email_on_download_request)
+    topic.subscribe_for_ever(exec_on_message=send_notification_on_download_request)

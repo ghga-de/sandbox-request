@@ -30,7 +30,7 @@ from sandbox_request.dao.request import (
     delete_request,
 )
 from sandbox_request.models import Request, RequestPartial
-from sandbox_request.pubsub import send_email
+from sandbox_request.pubsub import send_notification
 from sandbox_request.config import get_config
 
 
@@ -81,7 +81,7 @@ async def add_requests(data: Request, config=Depends(get_config)):
 
     request = await add_request(data)
 
-    send_email(
+    send_notification(
         recipient_name=config.data_steward_name,
         recipient_email=config.data_steward_email,
         subject=f"New Request Created: {request.id}",
@@ -108,7 +108,7 @@ async def update_requests(request_id, data: RequestPartial, config=Depends(get_c
 
     request = await update_request(request_id, data)
 
-    send_email(
+    send_notification(
         recipient_name=config.data_requester_name,
         recipient_email=config.data_requester_email,
         subject=f"Request Updated: {request.id}",
@@ -132,7 +132,7 @@ async def delete_requests(request_id, config=Depends(get_config)):
 
     await delete_request(request_id=request_id)
 
-    send_email(
+    send_notification(
         recipient_name=config.data_steward_name,
         recipient_email=config.data_steward_email,
         subject=f"Request Updated: {request_id}",
