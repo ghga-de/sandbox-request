@@ -29,7 +29,6 @@ cli = typer.Typer()
 def rest_api():
     """Serve the RESTful API"""
     run_server(app="sandbox_request.__main__:app", config=get_config())
-    subscribe()
 
 
 @cli.command()
