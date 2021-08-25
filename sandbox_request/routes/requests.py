@@ -47,7 +47,7 @@ async def get_requests():
     return requests
 
 
-@request_router.get("/requests/{id}", response_model=Request)
+@request_router.get("/requests/{request_id}", response_model=Request)
 async def get_one_request(request_id):
     """get one request
 
@@ -94,7 +94,7 @@ async def add_requests(data: Request, config=Depends(get_config)):
     return request
 
 
-@request_router.patch("/requests/{id}", response_model=Request)
+@request_router.patch("/requests/{request_id}", response_model=Request)
 async def update_requests(request_id, data: RequestPartial, config=Depends(get_config)):
     """update request
 
@@ -122,7 +122,7 @@ async def update_requests(request_id, data: RequestPartial, config=Depends(get_c
     return request
 
 
-@request_router.delete("/requests/{id}", response_model=Request)
+@request_router.delete("/requests/{request_id}", response_model=Request)
 async def delete_requests(request_id, config=Depends(get_config)):
     """delete request
 
@@ -130,7 +130,7 @@ async def delete_requests(request_id, config=Depends(get_config)):
         request_id (str):
     """
 
-    await delete_request(request_id=request_id)
+    await delete_request(request_id)
 
     send_notification(
         recipient_name=config.data_steward_name,

@@ -17,7 +17,18 @@
 """Defines all dataclasses/classes pertaining to a data model or schema"""
 
 from typing import Optional
+from enum import Enum
 from pydantic import BaseModel
+
+
+class StatusEnum(str, Enum):
+    """
+    Class StatusEnum for enumerating the possible statuses
+    """
+
+    PENDING = "pending"
+    APPROVED = "approved"
+    REJECTED = "rejected"
 
 
 class Request(BaseModel):
@@ -28,8 +39,15 @@ class Request(BaseModel):
     dataset_id: str
     purpose: str
     id: Optional[str] = None
-    status: str
+    status: StatusEnum
     user_id: str
+
+    class Config:
+        """
+        Class config to allow the usage of Enum for Status in Request class
+        """
+
+        use_enum_values = True
 
 
 class RequestPartial(BaseModel):
@@ -40,5 +58,11 @@ class RequestPartial(BaseModel):
     """
 
     purpose: Optional[str] = None
-    id: str
-    status: Optional[str] = None
+    status: StatusEnum
+
+    class Config:
+        """
+        Class config to allow the usage of Enum for Status in Request class
+        """
+
+        use_enum_values = True
