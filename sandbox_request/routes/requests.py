@@ -20,6 +20,7 @@
 from typing import List
 from fastapi import APIRouter
 from fastapi.exceptions import HTTPException
+from fastapi.params import Depends
 
 from sandbox_request.dao.request import (
     get_all_requests,
@@ -29,6 +30,8 @@ from sandbox_request.dao.request import (
     delete_request,
 )
 from sandbox_request.models import Request, RequestPartial
+from sandbox_request.pubsub import send_notification
+from sandbox_request.config import get_config
 
 
 request_router = APIRouter()
@@ -66,7 +69,7 @@ async def get_one_request(request_id):
 
 
 @request_router.post("/requests", response_model=Request)
-async def add_requests(data: Request):
+async def add_requests(data: Request, config=Depends(get_config)):
     """add request
 
     Args:
@@ -75,12 +78,24 @@ async def add_requests(data: Request):
     Returns:
         Request:
     """
+
     request = await add_request(data)
+
+    send_notification(
+        recipient_name=config.data_steward_name,
+        recipient_email=config.data_steward_email,
+        subject=f"New Request Created: {request.id}",
+        message_text=(
+            f"User {request.user_id} created a new request {request.id} "
+            f"to access dataset {request.dataset_id}."
+        ),
+    )
+
     return request
 
 
 @request_router.patch("/requests/{id}", response_model=Request)
-async def update_requests(request_id, data: RequestPartial):
+async def update_requests(request_id, data: RequestPartial, config=Depends(get_config)):
     """update request
 
     Args:
@@ -90,15 +105,36 @@ async def update_requests(request_id, data: RequestPartial):
     Returns:
         Request:
     """
+
     request = await update_request(request_id, data)
+
+    send_notification(
+        recipient_name=config.data_requester_name,
+        recipient_email=config.data_requester_email,
+        subject=f"Request Updated: {request.id}",
+        message_text=(
+            f"The request {request.id} has been updated to:\n\n"
+            f"Purpose: {request.purpose}\n\n"
+            f"Status: {request.status}"
+        ),
+    )
+
     return request
 
 
 @request_router.delete("/requests/{id}", response_model=Request)
-async def delete_requests(request_id):
+async def delete_requests(request_id, config=Depends(get_config)):
     """delete request
 
     Args:
         request_id (str):
     """
+
     await delete_request(request_id=request_id)
+
+    send_notification(
+        recipient_name=config.data_steward_name,
+        recipient_email=config.data_steward_email,
+        subject=f"Request Updated: {request_id}",
+        message_text=f"The request {request_id} has been deleted.",
+    )

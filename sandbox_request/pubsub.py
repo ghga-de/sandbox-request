@@ -29,31 +29,53 @@ def get_connection_params():
     )
 
 
-def send_message_notification(received_message: dict):
-    """Send a message when download request message arrives"""
+def send_notification(
+    recipient_name: str, recipient_email: str, subject: str, message_text: str
+):
+    """Send an email by publishing to the corresponding topic."""
 
     config = get_config()
 
-    drs_id = received_message["drs_id"]
-    access_id = received_message["access_id"]
-    user_id = received_message["user_id"]
+    message_text_wrapped = f"""
+        Dear {recipient_name},
+
+        {message_text}
+
+        Best wishes,
+        The GHGA System
+        """
 
     message = {
-        "recipient_name": "Recipient",
-        "recipient_email": "example@example.com",
-        "message": "A new download request ({}) has arrived from user {} with access_id {}".format(
-            drs_id, user_id, access_id
-        ),
-        "subject": "Download request {}".format(drs_id),
+        "recipient_name": recipient_name,
+        "recipient_email": recipient_email,
+        "subject": subject,
+        "message": message_text_wrapped,
     }
 
     topic = AmqpTopic(
         connection_params=get_connection_params(),
-        topic_name=config.sendnotif_topic_name,
+        topic_name=config.topic_name_send_notification,
         service_name="request",
     )
 
     topic.publish(message)
+
+
+def send_notification_on_download_request(received_message: dict):
+    """Send an email upon receiving a message describing a download request event."""
+
+    config = get_config()
+
+    send_notification(
+        recipient_name=config.data_steward_name,
+        recipient_email=config.data_steward_email,
+        subject=f"Download requested: {received_message['drs_id']}",
+        message_text=(
+            f"User {received_message['user_id']} requested "
+            f"the DRS object {received_message['drs_id']} for download "
+            f"using the access method {received_message['access_id']}."
+        ),
+    )
 
 
 def subscribe():
@@ -63,8 +85,8 @@ def subscribe():
 
     topic = AmqpTopic(
         connection_params=get_connection_params(),
-        topic_name=config.downloadreq_topic_name,
+        topic_name=config.topic_name_download_requested,
         service_name="request",
     )
 
-    topic.subscribe_for_ever(exec_on_message=send_message_notification)
+    topic.subscribe_for_ever(exec_on_message=send_notification_on_download_request)
