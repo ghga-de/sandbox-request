@@ -15,12 +15,13 @@
 
 """Config Parameter Modeling and Parsing"""
 
+from typing import Dict
 from functools import lru_cache
 from ghga_service_chassis_lib.config import config_from_yaml
 from ghga_service_chassis_lib.api import ApiConfigBase
 
 
-@config_from_yaml(prefix="sandbox_request")
+@config_from_yaml(prefix="request_service")
 class Config(ApiConfigBase):
     """Config parameters and their defaults."""
 
@@ -29,10 +30,11 @@ class Config(ApiConfigBase):
 
     # additional parameters will go here:
     db_url: str = "mongodb://localhost:27017"
-    db_name: str = "sandbox_requests_db"
+    db_name: str = "sandbox_request_db"
     rabbitmq_host: str = "rabbitmq"
     rabbitmq_port: int = 5672
     downloadreq_topic_name: str = "download_request"
+    services: Dict = {}
 
 
 @lru_cache
