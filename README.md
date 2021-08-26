@@ -35,3 +35,17 @@ uvicorn sandbox_request.main:app --reload
 ```
 
 You can visit the API by navigating to [http://localhost:8000/docs]()
+
+
+## Bootstrapping the database for the application
+
+The request service relies on a MongoDB instance that keeps track of requests and their approval status.
+
+All request records are stored in the `requests` collection.
+
+To pre-load request records into a fresh instance of MongoDB:
+
+```sh
+# load request records
+python scripts/populate_request_store.py --base-url http://localhost:8000 --directory examples
+```
