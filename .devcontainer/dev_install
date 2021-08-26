@@ -7,7 +7,7 @@ cd /workspace
 pip install -e ".[all]"
 
 # load mongodb:
-python scripts/load_mongodb.py
+python scripts/populate_request_store.py
 
 # install pre-commit hooks to git:
 pre-commit install
