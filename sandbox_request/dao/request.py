@@ -72,6 +72,7 @@ async def get_next_request_id(counter, collection_name):
     This method generates the sequence id for the MongoDB document
     """
     db_connect = DBConnect()
+    await _check_collection_counter()
     collection = await db_connect.get_collection(name=counter)
     document = await collection.find_one({"_id": collection_name})  # type: ignore
     collection.update_one({"_id": collection_name}, {"$inc": {"value": 1}})  # type: ignore
@@ -104,3 +105,23 @@ async def delete_request(request_id: str):
     collection = await db_connect.get_collection(name=COLLECTION_NAME)
     collection.delete_one({"id": request_id})  # type: ignore
     await db_connect.close_db()
+
+
+async def _check_collection_counter():
+    """
+    Check whether counter for collection 'requests' exists.
+    """
+    db_connect = DBConnect()
+    collection = await db_connect.get_collection(name=COUNTER)
+    docs = await collection.find().to_list(None)
+    if len(docs) == 0:
+        await _initialize_collection_counter()
+
+
+async def _initialize_collection_counter():
+    """
+    Initialize a counter for collection 'requests'.
+    """
+    db_connect = DBConnect()
+    collection = await db_connect.get_collection(name=COUNTER)
+    collection.insert_one({"_id": COLLECTION_NAME, "value": 0})
