@@ -21,7 +21,7 @@ from ghga_service_chassis_lib.config import config_from_yaml
 from ghga_service_chassis_lib.api import ApiConfigBase
 
 
-@config_from_yaml(prefix="request_service")
+@config_from_yaml(prefix="sandbox_request")
 class Config(ApiConfigBase):
     """Config parameters and their defaults."""
 
