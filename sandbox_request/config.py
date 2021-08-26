@@ -36,6 +36,17 @@ class Config(ApiConfigBase):
     downloadreq_topic_name: str = "download_request"
     services: Dict = {}
 
+    rabbitmq_host: str = "rabbitmq"
+    rabbitmq_port: int = 5672
+
+    data_requester_email: str
+    data_requester_name: str = "Data Requester"
+    data_steward_email: str
+    data_steward_name: str = "Data Steward"
+
+    topic_name_download_requested: str = "download_request"
+    topic_name_send_notification: str = "send_notifications"
+
 
 @lru_cache
 def get_config():
