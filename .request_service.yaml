@@ -4,6 +4,6 @@ log_level: info
 auto_reload: false
 workers: 1
 db_url: mongodb://localhost:27017
-db_name: request
+db_name: sandbox_request_db
 services:
   metadata_service: http://localhost:8000

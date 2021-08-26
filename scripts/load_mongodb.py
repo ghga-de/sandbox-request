@@ -20,7 +20,7 @@ import asyncio
 import json
 import motor.motor_asyncio
 
-DB_NAME = "request"
+DB_NAME = "sandbox_request_db"
 REQUESTS = "requests"
 COUNTER = "counter"
 COUNTER_JSON = {"_id": "requests", "value": 0}
