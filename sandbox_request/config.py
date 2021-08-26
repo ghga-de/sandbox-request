@@ -15,6 +15,7 @@
 
 """Config Parameter Modeling and Parsing"""
 
+from typing import Dict
 from functools import lru_cache
 from ghga_service_chassis_lib.config import config_from_yaml
 from ghga_service_chassis_lib.api import ApiConfigBase
@@ -33,6 +34,7 @@ class Config(ApiConfigBase):
     rabbitmq_host: str = "rabbitmq"
     rabbitmq_port: int = 5672
     downloadreq_topic_name: str = "download_request"
+    services: Dict = {}
 
 
 @lru_cache
