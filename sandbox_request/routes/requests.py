@@ -20,13 +20,15 @@
 from typing import List
 from fastapi import APIRouter
 from fastapi.exceptions import HTTPException
+
 from sandbox_request.dao.request import (
+    add_request,
+    delete_request,
     get_all_requests,
     get_request,
-    add_request,
     update_request,
-    delete_request,
 )
+from sandbox_request.core.utils import check_dataset
 from sandbox_request.models import Request, RequestPartial
 
 
@@ -74,6 +76,8 @@ async def add_requests(data: Request):
     Returns:
         Request:
     """
+    dataset_id = data.dataset_id
+    await check_dataset(dataset_id)
     request = await add_request(data)
     return request
 
