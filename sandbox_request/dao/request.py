@@ -49,6 +49,7 @@ async def get_request(request_id: str) -> Request:
     request_dict = await collection.find_one({"id": request_id})  # type: ignore
     request = Request(**request_dict)
     await db_connect.close_db()
+    request = await get_request(request_id)
     return request
 
 
@@ -64,6 +65,7 @@ async def add_request(data: Request) -> Request:
     await collection.insert_one(data.dict())  # type: ignore
     request = await get_request(request_id)
     await db_connect.close_db()
+    request = await get_request(request_id)  # type: ignore
     return request
 
 
