@@ -20,10 +20,10 @@ import asyncio
 import json
 import motor.motor_asyncio
 
-DB_NAME = "request"
+DB_NAME = "sandbox_request_db"
 REQUESTS = "requests"
 COUNTER = "counter"
-COUNTER_JSON = {"_id": "requests", "value": 4}
+COUNTER_JSON = {"_id": "requests", "value": 0}
 
 
 async def insert_records(db_name, collection_name, records):
@@ -35,13 +35,13 @@ async def insert_records(db_name, collection_name, records):
     await collection.insert_many(records)
 
 
-async def insert_one(db_name, collection_name, record):
+async def insert_one(db_name, collection_name, document):
     """
     insert counter
     """
     client = motor.motor_asyncio.AsyncIOMotorClient()
     collection = client[db_name][collection_name]
-    await collection.insert_one(record)
+    await collection.insert_one(document)
 
 
 async def delete_all_records(db_name, collection_name):
@@ -51,6 +51,15 @@ async def delete_all_records(db_name, collection_name):
     client = motor.motor_asyncio.AsyncIOMotorClient()
     collection = client[db_name][collection_name]
     await collection.delete_many({})
+
+
+async def update_counter(db_name, counter, collection_name):
+    """
+    This method generates the sequence id for the MongoDB document
+    """
+    client = motor.motor_asyncio.AsyncIOMotorClient()
+    collection = client[db_name][counter]
+    collection.update_one({"_id": collection_name}, {"$inc": {"value": 1}})  # type: ignore
 
 
 async def get_collection(db_name, collection_name):
@@ -68,7 +77,9 @@ with open("examples/requests.json") as request_file:
     loop = asyncio.get_event_loop()
     loop.run_until_complete(delete_all_records(DB_NAME, REQUESTS))
     loop.run_until_complete(delete_all_records(DB_NAME, COUNTER))
-    loop.run_until_complete(insert_records(DB_NAME, REQUESTS, file_records[REQUESTS]))
     loop.run_until_complete(insert_one(DB_NAME, COUNTER, COUNTER_JSON))
+    for record in file_records[REQUESTS]:
+        loop.run_until_complete(insert_one(DB_NAME, REQUESTS, record))
+        loop.run_until_complete(update_counter(DB_NAME, COUNTER, REQUESTS))
     print(loop.run_until_complete(get_collection(DB_NAME, REQUESTS)))
     print(loop.run_until_complete(get_collection(DB_NAME, COUNTER)))

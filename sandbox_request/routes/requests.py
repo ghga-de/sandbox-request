@@ -23,12 +23,13 @@ from fastapi.exceptions import HTTPException
 from fastapi.params import Depends
 
 from sandbox_request.dao.request import (
+    add_request,
+    delete_request,
     get_all_requests,
     get_request,
-    add_request,
     update_request,
-    delete_request,
 )
+from sandbox_request.core.utils import check_dataset
 from sandbox_request.models import Request, RequestPartial
 from sandbox_request.pubsub import send_notification
 from sandbox_request.config import get_config
@@ -78,7 +79,9 @@ async def add_requests(data: Request, config=Depends(get_config)):
     Returns:
         Request:
     """
-
+    
+    dataset_id = data.dataset_id
+    await check_dataset(dataset_id)
     request = await add_request(data)
 
     send_notification(

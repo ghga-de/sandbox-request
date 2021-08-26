@@ -62,8 +62,8 @@ async def add_request(data: Request) -> Request:
     data.id = request_id
     data.status = StatusEnum.PENDING
     await collection.insert_one(data.dict())  # type: ignore
-    request = await get_request(request_id)
     await db_connect.close_db()
+    request = await get_request(request_id)  # type: ignore
     return request
 
 
