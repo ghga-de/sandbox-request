@@ -13,7 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Config Parameter Modeling and Parsing"""
+"""
+This module provides Configuration for the API
+"""
 
 from typing import Dict
 from functools import lru_cache
@@ -23,7 +25,9 @@ from ghga_service_chassis_lib.api import ApiConfigBase
 
 @config_from_yaml(prefix="sandbox_request")
 class Config(ApiConfigBase):
-    """Config parameters and their defaults."""
+    """
+    Config class that extends ghga_service_chassis_lib.api.ApiConfigBase
+    """
 
     # config parameter needed for the api server
     # are inherited from ApiConfigBase
@@ -49,5 +53,8 @@ class Config(ApiConfigBase):
 
 @lru_cache
 def get_config():
-    """Get runtime configuration."""
+    """
+    Get the Config object that encapsulates all the
+    configuration for this application.
+    """
     return Config()

@@ -14,7 +14,7 @@
 # limitations under the License.
 
 """
-    All core utilities for the request service
+All core utilities for the functionality of Request Service API.
 """
 
 from typing import Dict, Optional

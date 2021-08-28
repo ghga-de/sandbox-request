@@ -14,7 +14,7 @@
 # limitations under the License.
 
 """
-    All request related endpoints
+All routes for interacting with Data Requests.
 """
 
 from typing import List
@@ -40,9 +40,8 @@ request_router = APIRouter()
 
 @request_router.get("/requests", response_model=List[Request])
 async def get_requests():
-    """get requests
-
-    Returns: requests
+    """
+    Retrieve a list of Request objects from the metadata store.
     """
     requests = await get_all_requests()
     return requests
@@ -50,16 +49,8 @@ async def get_requests():
 
 @request_router.get("/requests/{request_id}", response_model=Request)
 async def get_one_request(request_id):
-    """get one request
-
-    Args:
-        request_id (str):
-
-    Raises:
-        HTTPException:
-
-    Returns:
-        Request:
+    """
+    Given a Request ID, get the Request object.
     """
     request = await get_request(request_id)
     if not request:
@@ -71,19 +62,12 @@ async def get_one_request(request_id):
 
 @request_router.post("/requests", response_model=Request)
 async def add_requests(data: Request, config=Depends(get_config)):
-    """add request
-
-    Args:
-        data (Request):
-
-    Returns:
-        Request:
     """
-    
+    Add a new Request.
+    """
     dataset_id = data.dataset_id
     await check_dataset(dataset_id)
     request = await add_request(data)
-
     send_notification(
         recipient_name=config.data_steward_name,
         recipient_email=config.data_steward_email,
@@ -93,24 +77,15 @@ async def add_requests(data: Request, config=Depends(get_config)):
             f"to access dataset {request.dataset_id}."
         ),
     )
-
     return request
 
 
 @request_router.patch("/requests/{request_id}", response_model=Request)
 async def update_requests(request_id, data: RequestPartial, config=Depends(get_config)):
-    """update request
-
-    Args:
-        request_id (str):
-        data (RequestPartial):
-
-    Returns:
-        Request:
     """
-
+    Given a Request ID and data, update the Request object.
+    """
     request = await update_request(request_id, data)
-
     send_notification(
         recipient_name=config.data_requester_name,
         recipient_email=config.data_requester_email,
@@ -121,20 +96,15 @@ async def update_requests(request_id, data: RequestPartial, config=Depends(get_c
             f"Status: {request.status}"
         ),
     )
-
     return request
 
 
 @request_router.delete("/requests/{request_id}", response_model=Request)
 async def delete_requests(request_id, config=Depends(get_config)):
-    """delete request
-
-    Args:
-        request_id (str):
     """
-
+    Delete a Request object based on Request ID.
+    """
     await delete_request(request_id)
-
     send_notification(
         recipient_name=config.data_steward_name,
         recipient_email=config.data_steward_email,

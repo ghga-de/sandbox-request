@@ -13,8 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-"""Defines all dataclasses/classes pertaining to a data model or schema"""
+"""
+This module contains Pydantic models used by the Request Service API.
+"""
 
 from typing import Optional
 from enum import Enum

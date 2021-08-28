@@ -14,7 +14,8 @@
 # limitations under the License.
 
 """
-    Wrappers around DB queries related to requests
+Convenience methods for retrieving, adding, updating, and deleting
+requests from the database.
 """
 
 from typing import Union, List
@@ -27,10 +28,11 @@ COUNTER = "counter"
 
 async def get_all_requests() -> List[Request]:
     """
-    get list of all requests
+    Retrieve a list of all requests from the database.
 
     Returns:
         List of Requests
+
     """
     db_connect = DBConnect()
     collection = await db_connect.get_collection(name=COLLECTION_NAME)
@@ -42,7 +44,14 @@ async def get_all_requests() -> List[Request]:
 
 async def get_request(request_id: str) -> Request:
     """
-    get request
+    Given a request ID, get the request object from the database.
+
+    Args:
+        request_id: The request ID
+
+    Returns:
+        The request object
+
     """
     db_connect = DBConnect()
     collection = await db_connect.get_collection(name=COLLECTION_NAME)
@@ -54,7 +63,14 @@ async def get_request(request_id: str) -> Request:
 
 async def add_request(data: Request) -> Request:
     """
-    add new request
+    Add a new request object to the database.
+
+    Args:
+        data: The request object
+
+    Returns:
+        The added request object
+
     """
     db_connect = DBConnect()
     collection = await db_connect.get_collection(name=COLLECTION_NAME)
@@ -67,13 +83,21 @@ async def add_request(data: Request) -> Request:
     return request
 
 
-async def get_next_request_id(counter, collection_name):
+async def get_next_request_id(counter_name: str, collection_name: str) -> str:
     """
-    This method generates the sequence id for the MongoDB document
+    This method generates the sequence ID for the MongoDB document.
+
+    Args:
+        counter_name: Name of the counter collection
+        collection_name: Name of the collection for which the ID is to be generated
+
+    Returns:
+        The generated ID
+
     """
     db_connect = DBConnect()
     await _check_collection_counter()
-    collection = await db_connect.get_collection(name=counter)
+    collection = await db_connect.get_collection(name=counter_name)
     document = await collection.find_one({"_id": collection_name})  # type: ignore
     collection.update_one({"_id": collection_name}, {"$inc": {"value": 1}})  # type: ignore
     await db_connect.close_db()
@@ -84,7 +108,15 @@ async def update_request(
     request_id: str, data: Union[Request, RequestPartial]
 ) -> Request:
     """
-    update a request
+    Given a request ID and data, update the request object in the database.
+
+    Args:
+        request_id: The request ID
+        data: The request object
+
+    Returns:
+        The updated request object
+
     """
     db_connect = DBConnect()
     collection = await db_connect.get_collection(name=COLLECTION_NAME)
@@ -97,9 +129,13 @@ async def update_request(
     return request
 
 
-async def delete_request(request_id: str):
+async def delete_request(request_id: str) -> None:
     """
-    delete a request
+    Delete a request from the database.
+
+    Args:
+        request_id: The ID of ther request that is to be deleted.
+
     """
     db_connect = DBConnect()
     collection = await db_connect.get_collection(name=COLLECTION_NAME)
@@ -107,7 +143,7 @@ async def delete_request(request_id: str):
     await db_connect.close_db()
 
 
-async def _check_collection_counter():
+async def _check_collection_counter() -> None:
     """
     Check whether counter for collection 'requests' exists.
     """
@@ -118,7 +154,7 @@ async def _check_collection_counter():
         await _initialize_collection_counter()
 
 
-async def _initialize_collection_counter():
+async def _initialize_collection_counter() -> None:
     """
     Initialize a counter for collection 'requests'.
     """

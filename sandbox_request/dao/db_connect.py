@@ -14,40 +14,52 @@
 # limitations under the License.
 
 """
-    Database connection handling
+This module contains the DBConnect class and its related methods
+that are relevant for connecting to an underlying MongoDB store.
 """
 
-import motor.motor_asyncio
+from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorCollection
 from sandbox_request.config import get_config
 
 
 class DBConnect:
     """
-    class Database
+    Class that handles connections to a MongoDB store.
     """
 
-    def __init__(self) -> None:
+    def __init__(self):
         config = get_config()
         self.db_url = config.db_url
         self.db_name = config.db_name
-        self.client = motor.motor_asyncio.AsyncIOMotorClient()
+        self.client = AsyncIOMotorClient()
 
-    async def get_db(self):
+    async def get_db(self) -> AsyncIOMotorClient:
         """
         Return database client instance.
+
+        Returns:
+            An instance of AsyncIOMotorClient
+
         """
-        self.client = motor.motor_asyncio.AsyncIOMotorClient(self.db_url)
+        self.client = AsyncIOMotorClient(self.db_url)
         return self.client
 
-    async def close_db(self):
+    async def close_db(self) -> None:
         """
         Close database connection.
         """
         self.client.close()
 
-    async def get_collection(self, name) -> object:
+    async def get_collection(self, name: str) -> AsyncIOMotorCollection:
         """
-        Get a collection
+        Get a collection from the database.
+
+        Args:
+            name: Name of the collection to fetch
+
+        Returns:
+            An instance of AsyncIOMotorCollection
+
         """
         client = await self.get_db()
         collection = client[self.db_name][name]

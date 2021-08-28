@@ -13,7 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Definition of RESTful API endpoints"""
+"""
+This module define the API endpoints that collectively
+form the Request Service API.
+"""
 
 from fastapi import FastAPI
 from ghga_service_chassis_lib.api import configure_app

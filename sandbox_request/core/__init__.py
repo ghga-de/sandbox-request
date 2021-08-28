@@ -14,5 +14,5 @@
 # limitations under the License.
 
 """
-    Core functionalities of this service
+Core functionalities of this service
 """
