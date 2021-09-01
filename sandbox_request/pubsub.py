@@ -13,17 +13,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Defines all async pub/sub communication"""
+"""
+This module defines all async pub/sub communication that are
+carried out by the Request Service API.
+"""
 
+from typing import Dict
 import pika
 from ghga_service_chassis_lib.pubsub import AmqpTopic
 from .config import get_config
 
 
-def get_connection_params():
-    """Return a configuration object for pika"""
+def get_connection_params() -> pika.ConnectionParameters:
+    """
+    Return a configuration object for pika.
+    """
     config = get_config()
-
     return pika.ConnectionParameters(
         host=config.rabbitmq_host, port=config.rabbitmq_port
     )
@@ -31,8 +36,18 @@ def get_connection_params():
 
 def send_notification(
     recipient_name: str, recipient_email: str, subject: str, message_text: str
-):
-    """Send an email by publishing to the corresponding topic."""
+) -> None:
+    """
+    Send an email to a recipient by publishing to the
+    appropriate topic.
+
+    Args:
+        recipient_name: The name of the recipient
+        recipient_email: The email of the recipient
+        subject: The subject of the email
+        message_text: The email body
+
+    """
 
     config = get_config()
 
@@ -61,8 +76,15 @@ def send_notification(
     topic.publish(message)
 
 
-def send_notification_on_download_request(received_message: dict):
-    """Send an email upon receiving a message describing a download request event."""
+def send_notification_on_download_request(received_message: Dict) -> None:
+    """
+    Send an email upon receiving a message describing a
+    download request event.
+
+    Args:
+        received_message: Dict
+
+    """
 
     config = get_config()
 
@@ -78,10 +100,10 @@ def send_notification_on_download_request(received_message: dict):
     )
 
 
-
-def subscribe():
-    """Subscribes to the `download_request` topic."""
-
+def subscribe() -> None:
+    """
+    Subscribe to the ``download_request`` topic.
+    """
     config = get_config()
 
     topic = AmqpTopic(

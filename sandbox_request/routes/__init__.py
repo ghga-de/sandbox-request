@@ -14,5 +14,5 @@
 # limitations under the License.
 
 """
-    This package defines routes/endpoints of the Restful API
+This package defines routes/endpoints of the Restful API
 """

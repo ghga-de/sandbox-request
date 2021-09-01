@@ -13,7 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Entrypoint of the package"""
+"""
+Entrypoint of the package
+"""
 
 from ghga_service_chassis_lib.api import run_server
 import typer
