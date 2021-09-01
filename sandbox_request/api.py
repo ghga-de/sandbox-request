@@ -22,7 +22,11 @@ from sandbox_request.config import get_config
 from sandbox_request.dao.db_connect import DBConnect
 from sandbox_request.routes.requests import request_router
 
-app = FastAPI(title="Request Service API")
+app = FastAPI(
+    title="Request Service API",
+    openapi_url="/request/docs/openapi.json",
+    docs_url="/request/docs"
+)
 configure_app(app, config=get_config())
 db_connect = DBConnect()
 
