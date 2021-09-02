@@ -9,3 +9,7 @@ cors_allowed_origins: ["http://the-other-domain-to-accept.xy"]
 cors_allow_credentials: true
 cors_allowed_methods: ["*"]
 cors_allowed_headers: ["*"]
+fastapi_options:
+  root_path: "/"
+  openapi_url: "/openapi.json"
+  docs_url: "/docs"
