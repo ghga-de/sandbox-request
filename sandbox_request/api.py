@@ -26,8 +26,14 @@ from sandbox_request.dao.db_connect import DBConnect
 from sandbox_request.routes.requests import request_router
 from sandbox_request.routes.health import health_router
 
-app = FastAPI(title="Request Service API")
-configure_app(app, config=get_config())
+CONFIG = get_config()
+app = FastAPI(
+    title="Request Service API",
+    root_path=CONFIG.fastapi_options["root_path"],
+    openapi_url=CONFIG.fastapi_options["openapi_url"],
+    docs_url=CONFIG.fastapi_options["docs_url"],
+)
+configure_app(app, config=CONFIG)
 db_connect = DBConnect()
 
 app.include_router(request_router)
