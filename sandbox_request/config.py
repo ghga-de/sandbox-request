@@ -36,15 +36,21 @@ class Config(ApiConfigBase):
     db_url: str = "mongodb://localhost:27017"
     db_name: str = "sandbox_request_db"
 
+    fastapi_options: Dict = {
+        "root_path": "/",
+        "openapi_url": "/openapi.json",
+        "docs_url": "/docs",
+    }
+
     downloadreq_topic_name: str = "download_request"
     services: Dict = {}
 
     rabbitmq_host: str = "rabbitmq"
     rabbitmq_port: int = 5672
 
-    data_requester_email: str
+    data_requester_email: str = None
     data_requester_name: str = "Data Requester"
-    data_steward_email: str
+    data_steward_email: str = None
     data_steward_name: str = "Data Steward"
 
     topic_name_download_requested: str = "download_request"
