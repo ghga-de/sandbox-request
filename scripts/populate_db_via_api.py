@@ -15,7 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Populates the database with example data for the request service"""
+"""Populates the database with example data via the API"""
 
 import os
 import json
@@ -38,7 +38,7 @@ def populate_record(
             records = json.load(records_file)
         route = f"{base_url}/{record_type}"
         print(route)
-        for record in records[record_type]:
+        for record in records:
             print(record)
             response = requests.post(route, json=record)
             if exit_on_error:
