@@ -42,19 +42,17 @@ class Config(ApiConfigBase):
         "docs_url": "/docs",
     }
 
-    downloadreq_topic_name: str = "download_request"
-    services: Dict = {}
+    svc_metadata_url: str
 
     rabbitmq_host: str = "rabbitmq"
     rabbitmq_port: int = 5672
-
-    data_requester_email: str = None
-    data_requester_name: str = "Data Requester"
-    data_steward_email: str = None
-    data_steward_name: str = "Data Steward"
-
     topic_name_download_requested: str = "download_request"
     topic_name_send_notification: str = "send_notifications"
+
+    data_requester_email: str
+    data_requester_name: str = "Data Requester"
+    data_steward_email: str
+    data_steward_name: str = "Data Steward"
 
 
 @lru_cache

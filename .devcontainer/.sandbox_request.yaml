@@ -1,4 +1,4 @@
-port: 8010
+port: 8080
 log_level: debug
 auto_reload: true
 cors_allowed_origins: ["*"]
@@ -13,11 +13,10 @@ fastapi_options:
 db_url: mongodb://db:27017
 db_name: request
 
-downloadreq_topic_name: download_request
-services: {}
+svc_metadata_url: http://mock_metadata_svc:8080
 
-rabbitmq_host: = rabbitmq
-rabbitmq_port: = 5672
+rabbitmq_host: rabbitmq
+rabbitmq_port: 5672
 
 data_requester_email: test@example.com
 data_requester_name: Data Requester
