@@ -1,7 +1,9 @@
 #!/bin/bash
 
+COMMAND="$1" # either "rest-api" or async-api
+
 # change into the .devcontainer dir so that the config
 # yaml located there is taken into account:
 cd /workspace/.devcontainer
 
-sandbox-request
+sandbox-request "${COMMAND}"

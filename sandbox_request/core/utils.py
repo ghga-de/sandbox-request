@@ -27,7 +27,7 @@ async def check_dataset(dataset_id: str) -> Optional[Dict]:
     """Check if the given dataset ID exists in the metadata store."""
     config = get_config()
     dataset = None
-    url = f"{config.services['metadata_service']}/datasets/{dataset_id}"
+    url = f"{config.svc_metadata_url}/datasets/{dataset_id}"
     try:
         response = requests.get(url)
         if response.status_code == 200:
