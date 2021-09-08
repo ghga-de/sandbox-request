@@ -20,7 +20,7 @@ requests from the database.
 
 from typing import Union, List
 from sandbox_request.dao.db_connect import DBConnect
-from sandbox_request.models import Request, RequestPartial, StatusEnum
+from sandbox_request.models import RequestInit, Request, RequestPartial, StatusEnum
 
 COLLECTION_NAME = "requests"
 COUNTER = "counter"
@@ -61,7 +61,7 @@ async def get_request(request_id: str) -> Request:
     return request
 
 
-async def add_request(data: Request) -> Request:
+async def add_request(data: RequestInit) -> Request:
     """
     Add a new request object to the database.
 
@@ -75,9 +75,16 @@ async def add_request(data: Request) -> Request:
     db_connect = DBConnect()
     collection = await db_connect.get_collection(name=COLLECTION_NAME)
     request_id = await get_next_request_id(COUNTER, COLLECTION_NAME)
-    data.id = request_id
-    data.status = StatusEnum.PENDING
-    await collection.insert_one(data.dict())  # type: ignore
+
+    # supplement missing attributes:
+    data_dict = data.dict()
+    data_dict["id"] = request_id
+    data_dict["status"] = StatusEnum.PENDING
+
+    # validate final Request object:
+    request = Request(**data_dict)
+
+    await collection.insert_one(request.dict())  # type: ignore
     await db_connect.close_db()
     request = await get_request(request_id)  # type: ignore
     return request

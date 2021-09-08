@@ -30,7 +30,7 @@ from sandbox_request.dao.request import (
     update_request,
 )
 from sandbox_request.core.utils import check_dataset
-from sandbox_request.models import Request, RequestPartial
+from sandbox_request.models import RequestInit, Request, RequestPartial
 from sandbox_request.pubsub import send_notification
 from sandbox_request.config import get_config
 
@@ -61,7 +61,7 @@ async def get_one_request(request_id):
 
 
 @request_router.post("/requests", response_model=Request)
-async def add_requests(data: Request, config=Depends(get_config)):
+async def add_requests(data: RequestInit, config=Depends(get_config)):
     """
     Add a new Request.
     """
