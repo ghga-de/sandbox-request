@@ -32,16 +32,25 @@ class StatusEnum(str, Enum):
     REJECTED = "rejected"
 
 
-class Request(BaseModel):
+class RequestInit(BaseModel):
     """
-    Class Request
+    Model containing attributes required for
+    the creation of a new Request
+    (POST against the API).
     """
 
     dataset_id: str
     purpose: str
-    id: Optional[str] = None
-    status: StatusEnum
     user_id: str
+
+
+class Request(RequestInit):
+    """
+    Class Request
+    """
+
+    id: str
+    status: StatusEnum
 
     class Config:
         """
