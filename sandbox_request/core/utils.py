@@ -28,18 +28,15 @@ async def check_dataset(dataset_id: str) -> Optional[Dict]:
     config = get_config()
     dataset = None
     url = f"{config.svc_metadata_url}/datasets/{dataset_id}"
-    try:
-        response = requests.get(url)
-        if response.status_code == 200:
-            dataset = response.json()
-        elif response.status_code == 404:
-            raise HTTPException(
-                status_code=404,
-                detail=f"Dataset {dataset_id} could not be found in the metadata store. "
-                + "Cannot create a request for a dataset that does not exist.",
-            )
-        else:
-            response.raise_for_status()
-    except requests.RequestException as ex:
-        raise HTTPException(status_code=502, detail=ex.errno) from ex
+    response = requests.get(url)
+    if response.status_code == 200:
+        dataset = response.json()
+    elif response.status_code == 404:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Dataset {dataset_id} could not be found in the metadata store. "
+            + "Cannot create a request for a dataset that does not exist.",
+        )
+    else:
+        response.raise_for_status()
     return dataset
