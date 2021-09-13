@@ -47,7 +47,7 @@ class Config(ApiConfigBase):
     rabbitmq_host: str = "rabbitmq"
     rabbitmq_port: int = 5672
     topic_name_download_requested: str = "download_request"
-    topic_name_send_notification: str = "send_notifications"
+    topic_name_send_notification: str = "send_notification"
 
     data_requester_email: str
     data_requester_name: str = "Data Requester"
