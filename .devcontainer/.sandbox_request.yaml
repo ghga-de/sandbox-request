@@ -24,4 +24,4 @@ data_steward_email: test@example.com
 data_steward_name: Data Steward
 
 topic_name_download_requested: download_request
-topic_name_send_notification: send_notifications
+topic_name_send_notification: send_notification
