@@ -20,7 +20,6 @@
 """
 
 import asyncio
-import json
 from pathlib import Path
 
 import motor.motor_asyncio
@@ -55,15 +54,6 @@ async def delete_all_records(db_url: str, db_name: str, collection_name: str):
     await collection.delete_many({})
 
 
-async def update_counter(db_url: str, db_name: str, counter: str, collection_name: str):
-    """
-    This method generates the sequence id for the MongoDB document
-    """
-    client = motor.motor_asyncio.AsyncIOMotorClient(db_url)
-    collection = client[db_name][counter]
-    collection.update_one({"_id": collection_name}, {"$inc": {"value": 1}})  # type: ignore
-
-
 async def get_collection(db_url: str, db_name: str, collection_name: str):
     """
     get all requests
@@ -74,43 +64,23 @@ async def get_collection(db_url: str, db_name: str, collection_name: str):
     return await result.to_list(None)
 
 
-async def reset_and_populate_db(
-    db_url: str, db_name: str, example_dir: Path = DEFAULT_EXAMPLES_DIR
-):
+async def reset_and_populate_db(db_url: str, db_name: str):
     """
     Deletes all DB entries and populates the
     database with examples
     """
-
-    with open(example_dir / "requests.json") as requests_file:
-        requests = json.load(requests_file)
-
     # reset/populate the COUNTER collection:
     await delete_all_records(db_url, db_name, COUNTER)
     await insert_one(db_url, db_name, COUNTER, COUNTER_JSON)
 
-    # reset/populate the COUNTER collection:
-    await delete_all_records(db_url, db_name, REQUESTS)
-    for request in requests:
-        await insert_one(db_url, db_name, REQUESTS, request)
-        await update_counter(db_url, db_name, COUNTER, REQUESTS)
-    typer.echo("- added Counter:")
-    typer.echo(await get_collection(db_url, db_name, COUNTER))
-    typer.echo("- added Requests:")
-    typer.echo(await get_collection(db_url, db_name, REQUESTS))
 
-
-def main(
-    db_url: str = DEFAULT_DB_URL,
-    db_name: str = DEFAULT_DB_NAME,
-    example_dir: Path = DEFAULT_EXAMPLES_DIR,
-):
+def main(db_url: str = DEFAULT_DB_URL, db_name: str = DEFAULT_DB_NAME):
     """Main entrypoint. Handles the event loop."""
 
     typer.echo("This will populate the database with examples.")
 
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(reset_and_populate_db(db_url, db_name, example_dir))
+    loop.run_until_complete(reset_and_populate_db(db_url, db_name))
 
     typer.echo("Done.")
 

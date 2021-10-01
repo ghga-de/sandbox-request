@@ -85,8 +85,9 @@ async def add_request(data: RequestInit) -> Request:
     request = Request(**data_dict)
 
     await collection.insert_one(request.dict())  # type: ignore
+    request_dict = await collection.find_one({"id": request_id})  # type: ignore
+    request = Request(**request_dict)
     await db_connect.close_db()
-    request = await get_request(request_id)  # type: ignore
     return request
 
 
@@ -127,12 +128,12 @@ async def update_request(
     """
     db_connect = DBConnect()
     collection = await db_connect.get_collection(name=COLLECTION_NAME)
-    if data.status == StatusEnum.REJECTED or data.status == StatusEnum.APPROVED:
-        collection.update_one(  # type: ignore
-            {"id": request_id}, {"$set": data.dict(exclude_unset=True)}
-        )
+    collection.update_one(  # type: ignore
+        {"id": request_id}, {"$set": data.dict(exclude_unset=True)}
+    )
+    request_dict = await collection.find_one({"id": request_id})  # type: ignore
+    request = Request(**request_dict)
     await db_connect.close_db()
-    request = await get_request(request_id)  # type: ignore
     return request
 
 
