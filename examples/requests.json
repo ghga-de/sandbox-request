@@ -1,0 +1,16 @@
+[
+  {
+    "dataset_id": "DAT:0000001",
+    "id": "REQ:0000001",
+    "purpose": "Science",
+    "status": "pending",
+    "user_id": "USR:0000001"
+  },
+  {
+    "dataset_id": "DAT:0000002",
+    "id": "REQ:0000002",
+    "purpose": "Science",
+    "status": "approved",
+    "user_id": "USR:0000001"
+  }
+]
