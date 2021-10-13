@@ -1,3 +1,9 @@
+**Depreciation Note:   
+Please note, this repo was part as a implementation study and is not longer maintained.
+Please do not use for production.** 
+
+---
+
 # Sandbox Request Service
 
 Sandbox request acts as a communication platform for Data Requesters, Data Stewards, and DAC Representatives to negotiate on a request to access a specific dataset. This service pulls in every request-relevant event and persists an event history for each request..
