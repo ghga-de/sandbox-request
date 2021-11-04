@@ -53,7 +53,7 @@ services:
 
 
   mock_metadata_svc:
-    image: ghga/sandbox-request:dev
+    image: ghga/sandbox-metadata:dev
     entrypoint: ["python3", "-c"]
     command: |
       """
